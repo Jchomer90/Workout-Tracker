@@ -3,6 +3,10 @@ const { StringDecoder } = require("string_decoder");
 const Schema = mongoose.Schema;
 
 let ExerciseSchema = new Schema ({
+    name: {
+        type: String
+    },
+    
     type: {
         type: String
     },

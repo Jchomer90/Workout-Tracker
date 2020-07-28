@@ -14,7 +14,13 @@ const path = require("path");
 const db = require("./models");
 
 
+app.get("/exercise", function (req, res) {
+    res.sendFile(__dirname + "/public/exercise.html")
+});
 
+app.get("/stats", (req, res) => {
+    res.sendFile(__dirname + "/public/stats.html")
+});
 
 
 
