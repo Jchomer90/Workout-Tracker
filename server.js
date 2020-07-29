@@ -15,11 +15,11 @@ const db = require("./models");
 
 
 app.get("/exercise", function (req, res) {
-    res.sendFile(__dirname + "/public/exercise.html")
+    res.sendFile(path.join(__dirname + "/public/exercise.html"))
 });
 
 app.get("/stats", (req, res) => {
-    res.sendFile(__dirname + "/public/stats.html")
+    res.sendFile(path.join(__dirname + "/public/stats.html"))
 });
 
 app.get("/api/workouts", (req, res) => {
@@ -27,36 +27,42 @@ app.get("/api/workouts", (req, res) => {
 
     .then(workout => {
         // psuedo code
-        console.log(workout);
-        console.log(res);
+        // console.log(workout);
+        // console.log(res);
 
         let newWorkoutArray = [];
         for(let i = 0; i < workout.length; i++) {
             let newWorkoutObject;
-            // let duration;
-            for (let j = 0; workout[i].exercises.length; j++) {
+            let totalDuration = 0;
+
+            for (let j = 0; j < workout[i].exercises.length; j++) {
                 totalDuration += workout[i].exercises[j].duration;
             }
-            newWorkoutObject = { day: workout[i].day, exercise: workout[i].exercises, duration: duration }
-
+            newWorkoutObject = { day: workout[i].day, exercises: workout[i].exercises, totalDuration: totalDuration, _id: workout[i]._id }
+            // console.log(newWorkoutObject);
             newWorkoutArray.push(newWorkoutObject);
         }
-        res.json(workout);
+        console.log(newWorkoutArray);
+        res.json(newWorkoutArray);
 
     })
     .catch(err => {
+        // console.log(err);
         res.json(err);
     });
 });
 
 app.put("/api/workouts/:id", (req, res) => {
     db.Exercise.create(req.body) 
-        .then((exerciseData) => {
-            db.Workout.findOneAndUpdate({ _id: req.params.id }, {exercises: exerciseData._id }, { new: true })
-                .then(data => {
-                    res.json(data);
+        .then((data) => {
+            console.log(data);
+            db.Workout.findOneAndUpdate({ _id: req.params.id }, {$push: {exercises: mongoose.Types.ObjectId(data._id)}}, { new: true })
+                .then(exerciseData => {
+                    console.log(exerciseData);
+                    res.json(exerciseData);
                 })
                     .catch(err => {
+                        console.log(err);
                         res.json(err);
                     });
 
@@ -65,7 +71,7 @@ app.put("/api/workouts/:id", (req, res) => {
 });
 
 app.post("/api/workouts", (req, res) => {
-    db.Workout.create(req.body)
+    db.Workout.create({})
         .then(data => {
             res.json(data);
         })
