@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const logger = require("morgan");
 
 var PORT = process.env.PORT || 3000;
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || "mongodb://<User>:<Password1>@ds137360.mlab.com:37360/heroku_vlztqgfb", { useNewUrlParser: true });
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

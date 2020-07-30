@@ -32,7 +32,7 @@
 
   ## Usage
   
-  [Deployed Link]()
+  [Deployed Link](https://workout-tracker-27.herokuapp.com/?id=5f2241ecaa06d70017bda0b6)
 
   ## License
 
