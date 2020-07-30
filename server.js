@@ -25,48 +25,40 @@ app.get("/stats", (req, res) => {
 app.get("/api/workouts", (req, res) => {
     db.Workout.find({}).populate("exercises")
 
-    .then(workout => {
-        // psuedo code
-        // console.log(workout);
-        // console.log(res);
+        .then(workout => {
 
-        let newWorkoutArray = [];
-        for(let i = 0; i < workout.length; i++) {
-            let newWorkoutObject;
-            let totalDuration = 0;
+            let newWorkoutArray = [];
+            for (let i = 0; i < workout.length; i++) {
+                let newWorkoutObject;
+                let totalDuration = 0;
 
-            for (let j = 0; j < workout[i].exercises.length; j++) {
-                totalDuration += workout[i].exercises[j].duration;
+                for (let j = 0; j < workout[i].exercises.length; j++) {
+                    totalDuration += workout[i].exercises[j].duration;
+                }
+                newWorkoutObject = { day: workout[i].day, exercises: workout[i].exercises, totalDuration: totalDuration, _id: workout[i]._id }
+                newWorkoutArray.push(newWorkoutObject);
             }
-            newWorkoutObject = { day: workout[i].day, exercises: workout[i].exercises, totalDuration: totalDuration, _id: workout[i]._id }
-            // console.log(newWorkoutObject);
-            newWorkoutArray.push(newWorkoutObject);
-        }
-        console.log(newWorkoutArray);
-        res.json(newWorkoutArray);
+            res.json(newWorkoutArray);
 
-    })
-    .catch(err => {
-        // console.log(err);
-        res.json(err);
-    });
+        })
+        .catch(err => {
+            res.json(err);
+        });
 });
 
 app.put("/api/workouts/:id", (req, res) => {
-    db.Exercise.create(req.body) 
+    db.Exercise.create(req.body)
         .then((data) => {
             console.log(data);
-            db.Workout.findOneAndUpdate({ _id: req.params.id }, {$push: {exercises: mongoose.Types.ObjectId(data._id)}}, { new: true })
+            db.Workout.findOneAndUpdate({ _id: req.params.id }, { $push: { exercises: mongoose.Types.ObjectId(data._id) } }, { new: true })
                 .then(exerciseData => {
                     console.log(exerciseData);
                     res.json(exerciseData);
                 })
-                    .catch(err => {
-                        console.log(err);
-                        res.json(err);
-                    });
-
-            // res.json(exerciseData)
+                .catch(err => {
+                    console.log(err);
+                    res.json(err);
+                });
         });
 });
 
@@ -87,12 +79,11 @@ app.get("/api/workouts/range", (req, res) => {
             res.json(data);
             console.log(data);
         })
-            .catch(err => {
-                res.json(err);
-                console.log(err);
-            })
+        .catch(err => {
+            res.json(err);
+            console.log(err);
+        })
 });
-
 
 
 app.listen(PORT, () => {
